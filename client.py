@@ -2,6 +2,7 @@ import sys
 import gevent
 import time
 import urllib.request
+import urllib.error
 from gevent import monkey
 monkey.patch_all()
 
@@ -11,8 +12,8 @@ def fetch_url(url):
     try:
         resp = urllib.request.urlopen(url)
         resp_code = resp.code
-    except Exception:
-        raise
+    except urllib.error.HTTPError as e:
+        resp_code = e.code
 
     t1 = time.time()
     print("\t@ %5.2fs got response [%d]" % (t1 - t0, resp_code))
